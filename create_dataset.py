@@ -13,17 +13,19 @@ parser.add_argument('--claims-table-name', type=str)
 parser.add_argument('--customers-table-name', type=str)
 parser.add_argument('--bucket-name', type=str)
 parser.add_argument('--bucket-prefix', type=str)
+
 args = parser.parse_args()
 
-region = "us-east-2"
+
+region = "us-east-1"
 boto3.setup_default_session(region_name=region)
 s3_client = boto3.client('s3')
 account_id = boto3.client('sts').get_caller_identity()["Account"]
 now = pd.to_datetime('now')
 
-claims_feature_group_s3_prefix    = f'{args.bucket_prefix}/{account_id}/sagemaker/{region}/offline-store/{args.claims_feature_group_name}/data/year={now.year}/month={now.strftime("%m")}/day={now.strftime("%d")}'
-customers_feature_group_s3_prefix = f'{args.bucket_prefix}/{account_id}/sagemaker/{region}/offline-store/{args.customers_feature_group_name}/data/year={now.year}/month={now.strftime("%m")}/day={now.strftime("%d")}'
-
+claims_feature_group_s3_prefix    = f'{args.bucket_prefix}/{account_id}/sagemaker/{region}/offline-store/{args.claims_table_name}/data/year={now.year}/month={now.strftime("%m")}/day={now.strftime("%d")}'
+customers_feature_group_s3_prefix = f'{args.bucket_prefix}/{account_id}/sagemaker/{region}/offline-store/{args.customers_table_name}/data/year={now.year}/month={now.strftime("%m")}/day={now.strftime("%d")}'
+print(claims_feature_group_s3_prefix)
 # wait for data to be added to offline feature store
 offline_store_contents = None
 while (offline_store_contents is None):
